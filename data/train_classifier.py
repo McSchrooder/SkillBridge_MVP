@@ -109,13 +109,16 @@ def main():
         count = (df["bracket"] == i).sum()
         print(f"  {b['label']} ({b['range']}): {count} ({100*count/len(df):.1f}%)")
 
-    # --- Sample weights to balance brackets ---
+    # --- Sample weights: balance by bracket AND boost executives ---
     bracket_counts = df["bracket"].value_counts()
     target_count = bracket_counts.median()
-    df["sample_weight"] = df["bracket"].map(
+    bracket_weight = df["bracket"].map(
         lambda b: min(target_count / bracket_counts[b], 5.0)
     )
-    print(f"\nWeighted effective samples per bracket: ~{target_count:.0f}")
+    # Extra weight for executive + senior to help model learn high-salary patterns
+    exp_boost = df["experience"].map({0: 1.0, 1: 1.0, 2: 1.5, 3: 3.0})
+    df["sample_weight"] = bracket_weight * exp_boost
+    print(f"\nWeighted: bracket balance + 3x executive boost")
 
     # --- Feature matrix ---
     n = len(df)
@@ -147,8 +150,8 @@ def main():
 
     # --- Train ---
     model = xgb.XGBClassifier(
-        n_estimators=500,
-        max_depth=7,
+        n_estimators=800,
+        max_depth=9,
         learning_rate=0.05,
         subsample=0.8,
         colsample_bytree=0.7,
