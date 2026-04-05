@@ -342,7 +342,7 @@ export default function LandingPage() {
                   name: "ai-jobs.net",
                   desc: "150k+ salary records, weekly updated",
                   tag: "CC0 License",
-                  url: "https://ai-jobs.net/salaries/download/",
+                  url: "https://github.com/foorilla/ai-jobs-net-salaries",
                 },
                 {
                   name: "Coursera Dataset",
@@ -354,7 +354,7 @@ export default function LandingPage() {
                   name: "Demand Proxy",
                   desc: "Job posting volume trends 2020-2025",
                   tag: "Derived from ai-jobs.net",
-                  url: "https://ai-jobs.net/salaries/download/",
+                  url: "https://github.com/foorilla/ai-jobs-net-salaries",
                 },
               ].map((source) => (
                 <a
