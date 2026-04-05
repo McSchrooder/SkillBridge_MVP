@@ -250,27 +250,45 @@ def process_courses(skills):
     courses = []
     matched_skills_total = 0
 
-    with open(os.path.join(RAW, "coursera_courses.csv"), encoding="utf-8") as f:
+    # Try Rustamov dataset first, fall back to old format
+    rustamov_path = os.path.join(RAW, "coursera_rustamov", "CourseraDataset-Clean.csv")
+    old_path = os.path.join(RAW, "coursera_courses.csv")
+    csv_path = rustamov_path if os.path.exists(rustamov_path) else old_path
+    is_rustamov = csv_path == rustamov_path
+    print(f"  Using: {'Rustamov (Kaggle, CC0)' if is_rustamov else 'azrai99 (HuggingFace)'}")
+
+    with open(csv_path, encoding="utf-8") as f:
         for row in csv.DictReader(f):
-            raw_skills = row.get("Skills", "[]").strip()
-            title = row.get("title", "").strip()
-            url = row.get("URL", "").strip()
-            rating = row.get("rating", "")
-            schedule = row.get("Schedule", "").strip()
-            org = row.get("Organization", "").strip()
-            level = row.get("Level", "").strip()
+            if is_rustamov:
+                raw_skills = row.get("Skill gain", "").strip()
+                title = row.get("Course Title", "").strip()
+                url = row.get("Course Url", "").strip()
+                rating = row.get("Rating", "")
+                schedule = row.get("Duration to complete (Approx.)", "").strip()
+                org = row.get("Offered By", "").strip()
+                level = row.get("Level", "").strip()
+                # Rustamov format: comma-separated skills
+                if raw_skills and raw_skills.lower() != "not specified":
+                    skill_list = [s.strip() for s in raw_skills.split(",") if s.strip()]
+                else:
+                    skill_list = []
+            else:
+                raw_skills = row.get("Skills", "[]").strip()
+                title = row.get("title", "").strip()
+                url = row.get("URL", "").strip()
+                rating = row.get("rating", "")
+                schedule = row.get("Schedule", "").strip()
+                org = row.get("Organization", "").strip()
+                level = row.get("Level", "").strip()
+                try:
+                    skill_list = ast.literal_eval(raw_skills) if raw_skills and raw_skills != "[]" else []
+                except:
+                    skill_list = []
+                if not isinstance(skill_list, list):
+                    skill_list = []
 
             if not title or not url:
                 continue
-
-            # Parse skills list
-            try:
-                skill_list = ast.literal_eval(raw_skills) if raw_skills and raw_skills != "[]" else []
-            except:
-                skill_list = []
-
-            if not isinstance(skill_list, list):
-                skill_list = []
 
             # Map Coursera skill names to ESCO skill IDs
             mapped_ids = []
@@ -292,6 +310,14 @@ def process_courses(skills):
             except:
                 rating_val = 0
 
+            # Duration: Rustamov has hours as float, format nicely
+            if is_rustamov and schedule:
+                try:
+                    hours = float(schedule)
+                    schedule = f"{int(hours)} hours" if hours == int(hours) else f"{hours:.0f} hours"
+                except:
+                    pass
+
             courses.append({
                 "id": f"coursera-{len(courses)}",
                 "title": title,
@@ -302,7 +328,7 @@ def process_courses(skills):
                 "rating": rating_val,
                 "level": level,
                 "skillIds": mapped_ids,
-                "skillNames": skill_list[:10],  # keep original names for display
+                "skillNames": skill_list[:10],
             })
 
     # Keep only courses that have at least one mapped skill OR have a rating >= 4.0

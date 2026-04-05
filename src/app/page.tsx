@@ -127,7 +127,7 @@ export default function LandingPage() {
             {[
               { value: "725", label: "Occupations", sub: "ESCO taxonomy" },
               { value: "13.4k", label: "Skills mapped", sub: "EU standard" },
-              { value: "4,800+", label: "Courses", sub: "Coursera catalog" },
+              { value: "5,700+", label: "Courses", sub: "Coursera catalog" },
               { value: "79", label: "Countries", sub: "Salary data" },
             ].map((stat) => (
               <div
@@ -345,10 +345,10 @@ export default function LandingPage() {
                   url: "https://ai-jobs.net/salaries/download/",
                 },
                 {
-                  name: "Coursera 2024",
-                  desc: "6,600+ courses with skill tags",
-                  tag: "Apache 2.0",
-                  url: "https://huggingface.co/datasets/azrai99/coursera-course-dataset",
+                  name: "Coursera Dataset",
+                  desc: "8,300+ courses with skill tags",
+                  tag: "CC0 Public Domain",
+                  url: "https://www.kaggle.com/datasets/elvinrustam/coursera-dataset",
                 },
                 {
                   name: "Demand Proxy",
