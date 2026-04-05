@@ -19,6 +19,10 @@ import {
   getDemand,
   getSkillMap,
   getCountries,
+  getShapData,
+  getPredictions,
+  ShapData,
+  PredictionEntry,
 } from "@/lib/data";
 import { analyzeGap } from "@/lib/gapAnalysis";
 import { matchCourses } from "@/lib/courseMatching";
@@ -27,6 +31,7 @@ import { countryName } from "@/lib/countries";
 import StatCards from "@/components/StatCards";
 import SkillGapDisplay from "@/components/SkillGapDisplay";
 import SalaryChart from "@/components/SalaryChart";
+import SalaryPrediction from "@/components/SalaryPrediction";
 import CourseCards from "@/components/CourseCards";
 import DemandTrendChart from "@/components/DemandTrendChart";
 
@@ -75,6 +80,9 @@ function ResultsContent() {
   const [selectedSkillFilter, setSelectedSkillFilter] = useState<string | null>(null);
   const [selectedCountry, setSelectedCountry] = useState("ALL");
   const [availableCountries, setAvailableCountries] = useState<string[]>([]);
+  const [shapData, setShapData] = useState<ShapData | null>(null);
+  const [prediction, setPrediction] = useState<PredictionEntry | null>(null);
+  const [allPredictions, setAllPredictions] = useState<Record<string, Record<string, PredictionEntry>>>({});
 
   useEffect(() => {
     const occId = searchParams.get("occ") || "";
@@ -98,7 +106,9 @@ function ResultsContent() {
       getDemand(),
       getSkillMap(),
       getCountries(),
-    ]).then(([occupations, _skills, salaries, courses, demand, sMap, countries]) => {
+      getShapData(),
+      getPredictions(),
+    ]).then(([occupations, _skills, salaries, courses, demand, sMap, countries, shap, preds]) => {
       const occ = occupations.find((o) => o.id === occId);
       if (!occ) {
         setLoading(false);
@@ -140,6 +150,15 @@ function ResultsContent() {
         setDemandData(getDemandTrend(demand, primaryTitle));
       }
 
+      // ML prediction + SHAP
+      setShapData(shap);
+      setAllPredictions(preds);
+      const predKey = `${(searchParams.get("exp") || "mid")}_${countryCode === "ALL" ? "US" : countryCode}`;
+      const occPreds = preds[occId];
+      if (occPreds && occPreds[predKey]) {
+        setPrediction(occPreds[predKey]);
+      }
+
       // Save to history
       saveHistory(occ, gap, `/results?${searchParams.toString()}`);
 
@@ -169,7 +188,14 @@ function ResultsContent() {
 
   const handleCountryChange = useCallback((code: string) => {
     setSelectedCountry(code);
-  }, []);
+    // Update ML prediction for new country
+    const expLevel = searchParams.get("exp") || "mid";
+    const occId = searchParams.get("occ") || "";
+    const predCountry = code === "ALL" ? "US" : code;
+    const predKey = `${expLevel}_${predCountry}`;
+    const occPreds = allPredictions[occId];
+    setPrediction(occPreds?.[predKey] ?? null);
+  }, [searchParams, allPredictions]);
 
   if (loading) {
     return (
@@ -259,9 +285,18 @@ function ResultsContent() {
       <StatCards stats={stats} />
 
       <div id="gap" className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <SkillGapDisplay result={gapResult} skillMap={skillMap} />
+        <SkillGapDisplay result={gapResult} skillMap={skillMap} shapData={shapData} />
         <SalaryChart data={filteredSalary} />
       </div>
+
+      {/* ML Salary Prediction with SHAP explanations */}
+      <SalaryPrediction
+        prediction={prediction}
+        shapData={shapData}
+        occupationTitle={occupation.title}
+        experienceLevel={searchParams.get("exp") || "mid"}
+        country={selectedCountry === "ALL" ? "US (default)" : countryName(selectedCountry)}
+      />
 
       <DemandTrendChart data={demandData} title={jobTitle} />
 

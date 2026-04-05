@@ -1,5 +1,20 @@
 import { Occupation, Skill, Course, SalaryStats, DemandTrend } from "@/types";
 
+export interface ShapData {
+  baseValue: number;
+  experienceShap: number;
+  countryShap: number;
+  modelR2: number;
+  skills: Record<string, { name: string; shapMean: number; shapDirection: number }>;
+}
+
+export interface PredictionEntry {
+  predicted: number;
+  experienceEffect: number;
+  countryEffect: number;
+  topSkillContributions: { skillId: string; name: string; contribution: number }[];
+}
+
 // Cache fetched data in memory
 let cache: {
   occupations?: Occupation[];
@@ -8,6 +23,8 @@ let cache: {
   salaries?: SalaryStats[];
   demand?: DemandTrend[];
   countries?: string[];
+  shap?: ShapData;
+  predictions?: Record<string, Record<string, PredictionEntry>>;
   skillMap?: Map<string, Skill>;
   occupationMap?: Map<string, Occupation>;
 } = {};
@@ -57,6 +74,20 @@ export async function getCountries(): Promise<string[]> {
     cache.countries = await fetchJson<string[]>("/data/countries.json");
   }
   return cache.countries;
+}
+
+export async function getShapData(): Promise<ShapData> {
+  if (!cache.shap) {
+    cache.shap = await fetchJson<ShapData>("/data/shap.json");
+  }
+  return cache.shap;
+}
+
+export async function getPredictions(): Promise<Record<string, Record<string, PredictionEntry>>> {
+  if (!cache.predictions) {
+    cache.predictions = await fetchJson<Record<string, Record<string, PredictionEntry>>>("/data/predictions.json");
+  }
+  return cache.predictions;
 }
 
 export async function getSkillMap(): Promise<Map<string, Skill>> {

@@ -1,15 +1,18 @@
 "use client";
 
 import { GapAnalysisResult, Skill } from "@/types";
+import { ShapData } from "@/lib/data";
 
 interface SkillGapDisplayProps {
   result: GapAnalysisResult | null;
   skillMap: Map<string, Skill>;
+  shapData?: ShapData | null;
 }
 
 export default function SkillGapDisplay({
   result,
   skillMap,
+  shapData,
 }: SkillGapDisplayProps) {
   if (!result) {
     return (
@@ -24,9 +27,19 @@ export default function SkillGapDisplay({
     );
   }
 
+  // Sort missing skills by SHAP impact (highest first) if available
+  const sortedMissing = [...result.missing];
+  if (shapData) {
+    sortedMissing.sort((a, b) => {
+      const shapA = shapData.skills[a]?.shapMean ?? 0;
+      const shapB = shapData.skills[b]?.shapMean ?? 0;
+      return shapB - shapA;
+    });
+  }
+
   const allSkills = [
     ...result.matched.map((id) => ({ id, status: "matched" as const })),
-    ...result.missing.map((id) => ({ id, status: "missing" as const })),
+    ...sortedMissing.map((id) => ({ id, status: "missing" as const })),
   ];
 
   return (
@@ -46,6 +59,12 @@ export default function SkillGapDisplay({
         />
       </div>
 
+      {shapData && (
+        <p className="text-xs text-slate-400 mb-3">
+          Missing skills sorted by salary impact (SHAP) — learn the top ones first.
+        </p>
+      )}
+
       {/* Skills table */}
       <div className="max-h-80 overflow-y-auto">
         <table className="w-full text-sm">
@@ -53,18 +72,31 @@ export default function SkillGapDisplay({
             <tr className="text-left text-slate-500 border-b border-slate-100">
               <th className="pb-2 font-medium">Skill</th>
               <th className="pb-2 font-medium">Type</th>
+              {shapData && <th className="pb-2 font-medium text-right">Impact</th>}
               <th className="pb-2 font-medium text-right">Status</th>
             </tr>
           </thead>
           <tbody>
             {allSkills.map(({ id, status }) => {
               const skill = skillMap.get(id);
+              const shapVal = shapData?.skills[id];
               return (
                 <tr key={id} className="border-b border-slate-50">
                   <td className="py-2">{skill?.name ?? id}</td>
                   <td className="py-2 text-slate-400">
                     {skill?.category === "knowledge" ? "Knowledge" : "Skill"}
                   </td>
+                  {shapData && (
+                    <td className="py-2 text-right text-xs">
+                      {shapVal ? (
+                        <span className={shapVal.shapDirection > 0 ? "text-emerald-600" : "text-slate-400"}>
+                          {shapVal.shapDirection > 0 ? "+" : ""}${shapVal.shapMean.toLocaleString()}
+                        </span>
+                      ) : (
+                        <span className="text-slate-300">--</span>
+                      )}
+                    </td>
+                  )}
                   <td className="py-2 text-right">
                     {status === "matched" ? (
                       <span className="inline-block px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-medium">
