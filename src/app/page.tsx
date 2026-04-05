@@ -74,12 +74,22 @@ export default function LandingPage() {
 
             {/* SDG badges */}
             <div className="flex items-center justify-center gap-3 text-xs font-medium">
-              <span className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/10">
+              <a
+                href="https://sdgs.un.org/goals/goal4"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 hover:bg-white/20 transition-colors"
+              >
                 SDG 4 — Quality Education
-              </span>
-              <span className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/10">
+              </a>
+              <a
+                href="https://sdgs.un.org/goals/goal8"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 hover:bg-white/20 transition-colors"
+              >
                 SDG 8 — Decent Work
-              </span>
+              </a>
             </div>
 
             {/* Tagline */}
@@ -352,7 +362,7 @@ export default function LandingPage() {
                 },
                 {
                   name: "Demand Proxy",
-                  desc: "Job posting volume trends 2020-2025",
+                  desc: "Job posting volume trends 2021-2025",
                   tag: "Derived from ai-jobs.net",
                   url: "https://github.com/foorilla/ai-jobs-net-salaries",
                 },
@@ -389,7 +399,10 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-400">
           <p>SkillBridge MVP — Tomorrow University 2026</p>
           <p>
-            Supporting SDG 4 (Quality Education) &amp; SDG 8 (Decent Work)
+            Supporting{" "}
+            <a href="https://sdgs.un.org/goals/goal4" target="_blank" rel="noopener noreferrer" className="hover:text-sky-400 transition-colors">SDG 4 (Quality Education)</a>
+            {" "}&amp;{" "}
+            <a href="https://sdgs.un.org/goals/goal8" target="_blank" rel="noopener noreferrer" className="hover:text-sky-400 transition-colors">SDG 8 (Decent Work)</a>
           </p>
         </div>
       </footer>
