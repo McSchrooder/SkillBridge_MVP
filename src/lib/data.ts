@@ -1,15 +1,27 @@
 import { Occupation, Skill, Course, SalaryStats, DemandTrend } from "@/types";
 
 export interface ShapData {
-  baseValue: number;
+  modelType?: string; // "classifier" or "regressor"
+  brackets?: { label: string; range: string; min: number; max: number }[];
+  baseValues?: number[];
+  baseValue?: number;
+  accuracy?: number;
+  f1?: number;
+  modelR2?: number;
   experienceShap: number;
   countryShap: number;
-  modelR2: number;
   skills: Record<string, { name: string; shapMean: number; shapDirection: number }>;
 }
 
 export interface PredictionEntry {
-  predicted: number;
+  // Classifier fields
+  predictedBracket?: number;
+  bracketLabel?: string;
+  bracketRange?: string;
+  probabilities?: number[];
+  // Regressor fields
+  predicted?: number;
+  // Shared
   experienceEffect: number;
   countryEffect: number;
   topSkillContributions: { skillId: string; name: string; contribution: number }[];

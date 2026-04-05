@@ -84,8 +84,17 @@ export default function InputPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p className="text-slate-500">Loading ESCO data...</p>
+      <div className="p-6 sm:p-8 max-w-3xl mx-auto space-y-6">
+        <div className="animate-pulse">
+          <div className="h-7 bg-slate-200 rounded w-48 mb-2" />
+          <div className="h-4 bg-slate-100 rounded w-72" />
+        </div>
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="rounded-xl border border-slate-200 bg-white p-6 animate-pulse">
+            <div className="h-5 bg-slate-200 rounded w-1/3 mb-4" />
+            <div className="h-10 bg-slate-100 rounded w-full" />
+          </div>
+        ))}
       </div>
     );
   }

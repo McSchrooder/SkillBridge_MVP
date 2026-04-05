@@ -1,6 +1,6 @@
 "use client";
 
-import { PredictionEntry, ShapData } from "@/lib/data";
+import { ShapData, PredictionEntry } from "@/lib/data";
 
 interface SalaryPredictionProps {
   prediction: PredictionEntry | null;
@@ -21,13 +21,21 @@ export default function SalaryPrediction({
     return null;
   }
 
-  const contribs = prediction.topSkillContributions;
-  const maxAbsContrib = Math.max(
+  const brackets = shapData.brackets || [];
+  const isClassifier = shapData.modelType === "classifier";
+  const accuracy = shapData.accuracy || 0;
+  const f1 = shapData.f1 || 0;
+
+  const contribs = prediction.topSkillContributions || [];
+  const probs = prediction.probabilities || [];
+
+  // For waterfall bars, find max absolute contribution for scaling
+  const allValues = [
     ...contribs.map((c) => Math.abs(c.contribution)),
     Math.abs(prediction.experienceEffect),
     Math.abs(prediction.countryEffect),
-    1
-  );
+  ];
+  const maxAbsContrib = Math.max(...allValues, 0.001);
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-6 space-y-5">
@@ -42,66 +50,104 @@ export default function SalaryPrediction({
         </div>
         <p className="text-xs text-slate-400">
           {occupationTitle} &middot; {experienceLevel} &middot; {country}
-          &middot; Model R2: {shapData.modelR2.toFixed(2)}
         </p>
       </div>
 
-      {/* Predicted salary */}
-      <div className="text-center py-4 rounded-xl bg-gradient-to-r from-violet-50 to-sky-50">
-        <p className="text-sm text-slate-500">Predicted Annual Salary</p>
-        <p className="text-3xl font-bold text-slate-900 mt-1">
-          ${prediction.predicted.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-        </p>
-      </div>
+      {/* Predicted bracket */}
+      {isClassifier && prediction.bracketLabel && (
+        <div className="text-center py-5 rounded-xl bg-gradient-to-r from-violet-50 to-sky-50">
+          <p className="text-sm text-slate-500">Predicted Salary Bracket</p>
+          <p className="text-3xl font-bold text-slate-900 mt-1">
+            {prediction.bracketRange}
+          </p>
+          <p className="text-sm text-slate-500 mt-1">
+            {prediction.bracketLabel} tier
+          </p>
+        </div>
+      )}
 
-      {/* Why this number? - SHAP waterfall */}
+      {/* Bracket probabilities */}
+      {isClassifier && probs.length > 0 && brackets.length > 0 && (
+        <div>
+          <h4 className="text-sm font-semibold text-slate-700 mb-3">
+            Confidence by bracket
+          </h4>
+          <div className="space-y-2">
+            {brackets.map((bracket: { label: string; range: string }, i: number) => {
+              const prob = probs[i] || 0;
+              const isSelected = i === prediction.predictedBracket;
+              return (
+                <div key={i} className="flex items-center gap-3">
+                  <span className={`w-28 text-xs shrink-0 ${isSelected ? "font-semibold text-slate-900" : "text-slate-500"}`}>
+                    {bracket.range}
+                  </span>
+                  <div className="flex-1 h-6 bg-slate-100 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all ${
+                        isSelected ? "bg-sky-500" : "bg-slate-300"
+                      }`}
+                      style={{ width: `${Math.max(prob * 100, 2)}%` }}
+                    />
+                  </div>
+                  <span className={`w-12 text-right text-xs ${isSelected ? "font-semibold text-slate-900" : "text-slate-400"}`}>
+                    {(prob * 100).toFixed(0)}%
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Why this prediction? */}
       <div>
         <h4 className="text-sm font-semibold text-slate-700 mb-3">
-          Why this prediction?
+          What drives this prediction?
         </h4>
         <p className="text-xs text-slate-400 mb-4">
-          Starting from a base salary of ${shapData.baseValue.toLocaleString()},
-          each factor shifts the prediction up or down.
+          Each factor pushes the prediction toward a higher or lower bracket.
+          Positive = pushes up, negative = pushes down.
         </p>
 
         <div className="space-y-2">
-          {/* Experience effect */}
           <WaterfallRow
             label={`Experience: ${experienceLevel}`}
             value={prediction.experienceEffect}
             maxAbsValue={maxAbsContrib}
-            color="sky"
           />
-
-          {/* Country effect */}
           <WaterfallRow
             label={`Country: ${country}`}
             value={prediction.countryEffect}
             maxAbsValue={maxAbsContrib}
-            color="sky"
           />
-
-          {/* Top skill contributions */}
           {contribs.map((c) => (
             <WaterfallRow
               key={c.skillId}
               label={c.name}
               value={c.contribution}
               maxAbsValue={maxAbsContrib}
-              color="violet"
             />
           ))}
         </div>
       </div>
 
-      {/* Disclaimer */}
-      <p className="text-[11px] text-slate-400 leading-relaxed border-t border-slate-100 pt-3">
-        This prediction is from an XGBoost model trained on 130k salary records
-        mapped to ESCO skill profiles. R2 = {shapData.modelR2.toFixed(2)} indicates
-        the model explains {(shapData.modelR2 * 100).toFixed(0)}% of salary variance.
-        Use as directional guidance, not a precise estimate. SHAP values show how
-        each factor shifts the prediction relative to the average.
-      </p>
+      {/* Model performance + disclaimer */}
+      <div className="border-t border-slate-100 pt-3 space-y-2">
+        <div className="flex gap-4 text-xs">
+          <span className="text-slate-500">
+            Accuracy: <span className="font-semibold text-slate-700">{(accuracy * 100).toFixed(1)}%</span>
+          </span>
+          <span className="text-slate-500">
+            F1 Score: <span className="font-semibold text-slate-700">{(f1 * 100).toFixed(1)}%</span>
+          </span>
+        </div>
+        <p className="text-[11px] text-slate-400 leading-relaxed">
+          XGBoost classifier trained on 130k salary records mapped to ESCO skill profiles.
+          Predicts salary bracket based on occupation skills, experience, and location.
+          SHAP values show which factors push toward higher or lower brackets.
+          Use as directional guidance for skill prioritization.
+        </p>
+      </div>
     </div>
   );
 }
@@ -110,21 +156,13 @@ function WaterfallRow({
   label,
   value,
   maxAbsValue,
-  color,
 }: {
   label: string;
   value: number;
   maxAbsValue: number;
-  color: "sky" | "violet";
 }) {
   const isPositive = value >= 0;
   const barWidth = Math.max((Math.abs(value) / maxAbsValue) * 100, 2);
-
-  const bgColor = isPositive
-    ? color === "sky"
-      ? "bg-emerald-400"
-      : "bg-emerald-400"
-    : "bg-red-400";
 
   return (
     <div className="flex items-center gap-3 text-sm">
@@ -133,35 +171,30 @@ function WaterfallRow({
       </span>
       <div className="flex-1 flex items-center h-5">
         <div className="relative w-full h-full flex items-center">
-          {/* Center line */}
           <div className="absolute left-1/2 top-0 bottom-0 w-px bg-slate-200" />
-
           {isPositive ? (
-            <div className="absolute left-1/2 h-3 flex items-center">
+            <div className="absolute left-1/2 h-3">
               <div
-                className={`${bgColor} h-full rounded-r`}
+                className="bg-emerald-400 h-full rounded-r"
                 style={{ width: `${barWidth / 2}%` }}
               />
             </div>
           ) : (
             <div
-              className="absolute h-3 flex items-center justify-end"
-              style={{
-                right: "50%",
-                width: `${barWidth / 2}%`,
-              }}
+              className="absolute h-3 flex justify-end"
+              style={{ right: "50%", width: `${barWidth / 2}%` }}
             >
-              <div className={`${bgColor} h-full w-full rounded-l`} />
+              <div className="bg-red-400 h-full w-full rounded-l" />
             </div>
           )}
         </div>
       </div>
       <span
-        className={`w-20 text-right text-xs font-medium shrink-0 ${
+        className={`w-16 text-right text-xs font-medium shrink-0 ${
           isPositive ? "text-emerald-600" : "text-red-600"
         }`}
       >
-        {isPositive ? "+" : ""}${value.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+        {isPositive ? "+" : ""}{value.toFixed(3)}
       </span>
     </div>
   );
