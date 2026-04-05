@@ -21,12 +21,14 @@ import {
   getCountries,
   getShapData,
   getPredictions,
+  getSkillHierarchy,
   ShapData,
   PredictionEntry,
 } from "@/lib/data";
 import { analyzeGap } from "@/lib/gapAnalysis";
 import { matchCourses } from "@/lib/courseMatching";
 import { getDemandTrend, getJobTitlesForOccupation } from "@/lib/demandLookup";
+import { buildLearningPath, LearningStep } from "@/lib/learningPath";
 import { countryName } from "@/lib/countries";
 import StatCards from "@/components/StatCards";
 import SkillGapDisplay from "@/components/SkillGapDisplay";
@@ -34,6 +36,7 @@ import SalaryChart from "@/components/SalaryChart";
 import SalaryPrediction from "@/components/SalaryPrediction";
 import CourseCards from "@/components/CourseCards";
 import DemandTrendChart from "@/components/DemandTrendChart";
+import LearningPathComponent from "@/components/LearningPath";
 import { ResultsPageSkeleton } from "@/components/Skeleton";
 
 function saveHistory(
@@ -82,6 +85,7 @@ function ResultsContent() {
   const [selectedCountry, setSelectedCountry] = useState("ALL");
   const [availableCountries, setAvailableCountries] = useState<string[]>([]);
   const [shapData, setShapData] = useState<ShapData | null>(null);
+  const [learningSteps, setLearningSteps] = useState<LearningStep[]>([]);
   const [prediction, setPrediction] = useState<PredictionEntry | null>(null);
   const [allPredictions, setAllPredictions] = useState<Record<string, Record<string, PredictionEntry>>>({});
 
@@ -109,7 +113,8 @@ function ResultsContent() {
       getCountries(),
       getShapData(),
       getPredictions(),
-    ]).then(([occupations, _skills, salaries, courses, demand, sMap, countries, shap, preds]) => {
+      getSkillHierarchy(),
+    ]).then(([occupations, _skills, salaries, courses, demand, sMap, countries, shap, preds, hierarchy]) => {
       const occ = occupations.find((o) => o.id === occId);
       if (!occ) {
         setLoading(false);
@@ -145,6 +150,10 @@ function ResultsContent() {
       // Course recommendations
       const matched = matchCourses(courses, gap.missing);
       setMatchedCourses(matched);
+
+      // Learning path
+      const path = buildLearningPath(gap.missing, sMap, hierarchy, shap, courses);
+      setLearningSteps(path);
 
       // Demand trends
       if (primaryTitle) {
@@ -283,6 +292,15 @@ function ResultsContent() {
         experienceLevel={searchParams.get("exp") || "mid"}
         country={selectedCountry === "ALL" ? "US (default)" : countryName(selectedCountry)}
       />
+
+      {/* Learning Path */}
+      {gapResult && (
+        <LearningPathComponent
+          steps={learningSteps}
+          matchPercentage={gapResult.matchPercentage}
+          occupationTitle={occupation.title}
+        />
+      )}
 
       <DemandTrendChart data={demandData} title={jobTitle} />
 

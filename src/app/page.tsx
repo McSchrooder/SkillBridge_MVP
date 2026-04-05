@@ -336,38 +336,48 @@ export default function LandingPage() {
                   name: "ESCO v1.2.1",
                   desc: "EU taxonomy of occupations & skills",
                   tag: "European Commission",
+                  url: "https://esco.ec.europa.eu/en/use-esco/download",
                 },
                 {
                   name: "ai-jobs.net",
                   desc: "150k+ salary records, weekly updated",
                   tag: "CC0 License",
+                  url: "https://github.com/foorilla/ai-jobs-net-salaries",
                 },
                 {
                   name: "Coursera 2024",
                   desc: "6,600+ courses with skill tags",
                   tag: "Apache 2.0",
+                  url: "https://huggingface.co/datasets/azrai99/coursera-course-dataset",
                 },
                 {
                   name: "Demand Proxy",
                   desc: "Job posting volume trends 2020-2025",
-                  tag: "Derived",
+                  tag: "Derived from ai-jobs.net",
+                  url: "https://ai-jobs.net/salaries/download/",
                 },
               ].map((source) => (
-                <div
+                <a
                   key={source.name}
-                  className="flex items-start gap-3 p-3 rounded-lg bg-slate-50"
+                  href={source.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-3 p-3 rounded-lg bg-slate-50 hover:bg-sky-50 transition-colors group"
                 >
                   <div className="w-2 h-2 rounded-full bg-sky-500 mt-2 shrink-0" />
                   <div>
-                    <p className="text-sm font-medium text-slate-900">
+                    <p className="text-sm font-medium text-slate-900 group-hover:text-sky-700">
                       {source.name}
+                      <svg className="w-3 h-3 inline ml-1 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                      </svg>
                     </p>
                     <p className="text-xs text-slate-500">{source.desc}</p>
                     <span className="inline-block mt-1 text-[10px] font-medium text-slate-400 uppercase tracking-wider">
                       {source.tag}
                     </span>
                   </div>
-                </div>
+                </a>
               ))}
             </div>
           </div>
@@ -377,7 +387,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t border-slate-200 py-8 px-6 sm:px-8 mt-auto">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-400">
-          <p>SkillBridge MVP — University Project 2026</p>
+          <p>SkillBridge MVP — Tomorrow University 2026</p>
           <p>
             Supporting SDG 4 (Quality Education) &amp; SDG 8 (Decent Work)
           </p>

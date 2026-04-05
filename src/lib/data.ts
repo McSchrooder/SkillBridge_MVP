@@ -37,6 +37,7 @@ let cache: {
   countries?: string[];
   shap?: ShapData;
   predictions?: Record<string, Record<string, PredictionEntry>>;
+  skillHierarchy?: Record<string, { parent: string; depth: number; isKnowledge: boolean }>;
   skillMap?: Map<string, Skill>;
   occupationMap?: Map<string, Occupation>;
 } = {};
@@ -86,6 +87,13 @@ export async function getCountries(): Promise<string[]> {
     cache.countries = await fetchJson<string[]>("/data/countries.json");
   }
   return cache.countries;
+}
+
+export async function getSkillHierarchy(): Promise<Record<string, { parent: string; depth: number; isKnowledge: boolean }>> {
+  if (!cache.skillHierarchy) {
+    cache.skillHierarchy = await fetchJson<Record<string, { parent: string; depth: number; isKnowledge: boolean }>>("/data/skill_hierarchy.json");
+  }
+  return cache.skillHierarchy!;
 }
 
 export async function getShapData(): Promise<ShapData> {
