@@ -33,6 +33,12 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# raw data (large CSVs, keep out of git)
+/data/raw/
+
+# claude code
+.claude/
+
 # vercel
 .vercel
 
