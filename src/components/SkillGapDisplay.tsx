@@ -61,7 +61,7 @@ export default function SkillGapDisplay({
 
       {shapData && (
         <p className="text-xs text-slate-400 mb-3">
-          Missing skills sorted by salary impact (SHAP) — learn the top ones first.
+          Missing skills sorted by SHAP importance — learn the top ones first.
         </p>
       )}
 
@@ -87,11 +87,19 @@ export default function SkillGapDisplay({
                     {skill?.category === "knowledge" ? "Knowledge" : "Skill"}
                   </td>
                   {shapData && (
-                    <td className="py-2 text-right text-xs">
+                    <td className="py-2 text-right text-xs w-24">
                       {shapVal ? (
-                        <span className={shapVal.shapDirection > 0 ? "text-emerald-600" : "text-slate-400"}>
-                          {shapVal.shapDirection > 0 ? "+" : ""}${shapVal.shapMean.toLocaleString()}
-                        </span>
+                        <div className="flex items-center justify-end gap-1.5">
+                          <div className="w-12 h-2 bg-slate-100 rounded-full overflow-hidden">
+                            <div
+                              className={`h-full rounded-full ${shapVal.shapDirection > 0 ? "bg-emerald-400" : "bg-red-300"}`}
+                              style={{ width: `${Math.min(shapVal.shapMean * 500, 100)}%` }}
+                            />
+                          </div>
+                          <span className={shapVal.shapDirection > 0 ? "text-emerald-600" : "text-red-400"}>
+                            {shapVal.shapDirection > 0 ? "+" : "-"}
+                          </span>
+                        </div>
                       ) : (
                         <span className="text-slate-300">--</span>
                       )}

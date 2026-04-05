@@ -162,30 +162,34 @@ function WaterfallRow({
   maxAbsValue: number;
 }) {
   const isPositive = value >= 0;
-  const barWidth = Math.max((Math.abs(value) / maxAbsValue) * 100, 2);
+  // Scale to percentage of the half-bar (each side is 50% of container)
+  const pct = Math.max((Math.abs(value) / maxAbsValue) * 45, 1);
 
   return (
     <div className="flex items-center gap-3 text-sm">
-      <span className="w-48 sm:w-56 text-slate-600 truncate shrink-0 text-xs">
+      <span className="w-40 sm:w-48 text-slate-600 truncate shrink-0 text-xs">
         {label}
       </span>
-      <div className="flex-1 flex items-center h-5">
-        <div className="relative w-full h-full flex items-center">
-          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-slate-200" />
-          {isPositive ? (
-            <div className="absolute left-1/2 h-3">
-              <div
-                className="bg-emerald-400 h-full rounded-r"
-                style={{ width: `${barWidth / 2}%` }}
-              />
-            </div>
-          ) : (
+      {/* Bar area: left half = negative, right half = positive */}
+      <div className="flex-1 h-5 flex items-center">
+        {/* Negative side */}
+        <div className="w-1/2 flex justify-end">
+          {!isPositive && (
             <div
-              className="absolute h-3 flex justify-end"
-              style={{ right: "50%", width: `${barWidth / 2}%` }}
-            >
-              <div className="bg-red-400 h-full w-full rounded-l" />
-            </div>
+              className="h-3 bg-red-400 rounded-l"
+              style={{ width: `${pct}%` }}
+            />
+          )}
+        </div>
+        {/* Center line */}
+        <div className="w-px h-4 bg-slate-300 shrink-0" />
+        {/* Positive side */}
+        <div className="w-1/2">
+          {isPositive && (
+            <div
+              className="h-3 bg-emerald-400 rounded-r"
+              style={{ width: `${pct}%` }}
+            />
           )}
         </div>
       </div>
