@@ -342,7 +342,7 @@ export default function LandingPage() {
                   name: "ai-jobs.net",
                   desc: "150k+ salary records, weekly updated",
                   tag: "CC0 License",
-                  url: "https://github.com/foorilla/ai-jobs-net-salaries",
+                  url: "https://ai-jobs.net/salaries/download/",
                 },
                 {
                   name: "Coursera 2024",

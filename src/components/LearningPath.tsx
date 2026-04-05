@@ -164,32 +164,18 @@ export default function LearningPath({
                           </p>
                         </button>
 
-                        {/* Expanded: show courses */}
-                        {isExpanded && step.courses.length > 0 && (
-                          <div className="mt-2 ml-7 space-y-2">
-                            {step.courses.map((course) => (
-                              <a
-                                key={course.id}
-                                href={course.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="block rounded-lg border border-slate-100 p-3 hover:border-sky-300 transition-all text-sm"
-                              >
-                                <p className="font-medium text-slate-800 line-clamp-1">
-                                  {course.title}
-                                </p>
-                                <div className="flex items-center gap-3 mt-1 text-xs text-slate-400">
-                                  <span>{course.organization}</span>
-                                  {course.rating > 0 && (
-                                    <span>
-                                      <span className="text-amber-500">&#9733;</span>{" "}
-                                      {course.rating.toFixed(1)}
-                                    </span>
-                                  )}
-                                  {course.level && <span>{course.level}</span>}
-                                </div>
-                              </a>
-                            ))}
+                        {/* Expanded: show detail */}
+                        {isExpanded && (
+                          <div className="mt-2 ml-7 text-xs text-slate-500">
+                            {step.courses.length > 0 ? (
+                              <p>
+                                {step.courses.length} course{step.courses.length !== 1 ? "s" : ""} available
+                                — see <a href="#courses" className="text-sky-600 underline">Recommended Courses</a> below
+                                and filter by this skill.
+                              </p>
+                            ) : (
+                              <p>No Coursera courses mapped to this skill yet.</p>
+                            )}
                           </div>
                         )}
                       </div>
