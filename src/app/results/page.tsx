@@ -215,6 +215,8 @@ function ResultsContent() {
     return <EmptyResultsState />;
   }
 
+  const hasSalaryData = allSalaryData.length > 0;
+
   const stats = [
     {
       label: "Skills Matched",
@@ -228,13 +230,17 @@ function ResultsContent() {
       label: "Courses Found",
       value: `${matchedCourses.length}`,
     },
-    {
-      label: "Avg. Salary",
-      value:
-        filteredSalary.length > 0
-          ? `$${Math.round(filteredSalary.reduce((s, d) => s + d.median, 0) / filteredSalary.length / 1000)}k`
-          : "N/A",
-    },
+    ...(hasSalaryData
+      ? [
+          {
+            label: "Avg. Salary",
+            value:
+              filteredSalary.length > 0
+                ? `$${Math.round(filteredSalary.reduce((s, d) => s + d.median, 0) / filteredSalary.length / 1000)}k`
+                : "N/A",
+          },
+        ]
+      : []),
   ];
 
   const missingSkillDetails = gapResult

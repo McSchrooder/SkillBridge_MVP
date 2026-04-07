@@ -40,6 +40,7 @@ let cache: {
   skillHierarchy?: Record<string, { parent: string; depth: number; isKnowledge: boolean }>;
   skillMap?: Map<string, Skill>;
   occupationMap?: Map<string, Occupation>;
+  salaryOccIds?: Set<string>;
 } = {};
 
 async function fetchJson<T>(path: string): Promise<T> {
@@ -124,4 +125,16 @@ export async function getOccupationMap(): Promise<Map<string, Occupation>> {
     cache.occupationMap = new Map(occupations.map((o) => [o.id, o]));
   }
   return cache.occupationMap;
+}
+
+export async function getOccupationIdsWithSalary(): Promise<Set<string>> {
+  if (!cache.salaryOccIds) {
+    const salaries = await getSalaries();
+    cache.salaryOccIds = new Set(
+      salaries
+        .map((s) => s.occupationId)
+        .filter((id): id is string => !!id)
+    );
+  }
+  return cache.salaryOccIds;
 }

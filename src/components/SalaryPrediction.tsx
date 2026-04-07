@@ -18,7 +18,37 @@ export default function SalaryPrediction({
   country,
 }: SalaryPredictionProps) {
   if (!prediction || !shapData) {
-    return null;
+    return (
+      <div className="rounded-xl border border-slate-200 bg-white p-6 space-y-3">
+        <div className="flex items-center justify-between gap-2 flex-wrap">
+          <div className="flex items-center gap-2">
+            <h3 className="text-lg font-semibold text-slate-900">
+              ML Salary Prediction
+            </h3>
+            <span className="px-2 py-0.5 rounded-full bg-violet-100 text-violet-700 text-xs font-medium">
+              XGBoost
+            </span>
+          </div>
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-amber-50 text-amber-700 border border-amber-200">
+            Not available for this role
+          </span>
+        </div>
+        <p className="text-xs text-slate-400">
+          {occupationTitle} &middot; {experienceLevel} &middot; {country}
+        </p>
+        <div className="rounded-lg bg-slate-50 border border-slate-100 p-5">
+          <p className="text-sm text-slate-700 font-medium mb-2">
+            We can not run the salary prediction for this role.
+          </p>
+          <p className="text-xs text-slate-500 leading-relaxed">
+            The XGBoost model is trained on the same ai-jobs.net survey as the salary chart above, which only covers AI, data, and software occupations. We pre-computed predictions for the roles where the training data is reliable, and we deliberately do not show predictions for roles where it is not, because a confident-looking number on top of empty data would be misleading.
+          </p>
+          <p className="text-xs text-slate-500 leading-relaxed mt-2">
+            To see the prediction in action, try a role like data scientist, machine learning engineer, or data analyst.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   const brackets = shapData.brackets || [];

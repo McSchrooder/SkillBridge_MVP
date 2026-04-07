@@ -16,8 +16,14 @@ interface StatCardsProps {
  * TODO: Wire up with real computed values from analysis results.
  */
 export default function StatCards({ stats }: StatCardsProps) {
+  const colsClass =
+    stats.length >= 4
+      ? "md:grid-cols-4"
+      : stats.length === 3
+        ? "md:grid-cols-3"
+        : "md:grid-cols-2";
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className={`grid grid-cols-2 ${colsClass} gap-4`}>
       {stats.map((stat) => (
         <div
           key={stat.label}

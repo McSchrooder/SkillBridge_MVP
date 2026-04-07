@@ -28,12 +28,50 @@ export default function SalaryChart({ data }: SalaryChartProps) {
   if (data.length === 0) {
     return (
       <div className="rounded-xl border border-slate-200 bg-white p-6">
-        <h3 className="text-lg font-semibold text-slate-900 mb-4">
-          Salary Insights
-        </h3>
-        <div className="h-48 flex items-center justify-center bg-slate-50 rounded-lg">
-          <p className="text-sm text-slate-400">
-            No salary data available for this occupation.
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-lg font-semibold text-slate-900">
+            Salary Insights
+          </h3>
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-amber-50 text-amber-700 border border-amber-200">
+            Limited data
+          </span>
+        </div>
+        <div className="rounded-lg bg-slate-50 border border-slate-100 p-5 space-y-3">
+          <p className="text-sm text-slate-700 font-medium">
+            No salary data available for this role.
+          </p>
+          <p className="text-xs text-slate-500 leading-relaxed">
+            Our salary numbers come from the{" "}
+            <a
+              href="https://github.com/saurabhshahane/ai-jobs-salaries"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sky-600 underline"
+            >
+              ai-jobs.net community survey
+            </a>
+            , which mainly covers AI, data, and software occupations. Roles outside that scope are not represented in this dataset, so this section is empty for them. The skill gap, learning path, and course recommendations on this page still apply fully.
+          </p>
+          <p className="text-xs text-slate-500 leading-relaxed">
+            For salary information on this role, public sources like{" "}
+            <a
+              href="https://www.bls.gov/oes/current/oes_nat.htm"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sky-600 underline"
+            >
+              US BLS
+            </a>{" "}
+            or{" "}
+            <a
+              href="https://www.glassdoor.com/Salaries/index.htm"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sky-600 underline"
+            >
+              Glassdoor
+            </a>{" "}
+            offer broader coverage.
           </p>
         </div>
       </div>

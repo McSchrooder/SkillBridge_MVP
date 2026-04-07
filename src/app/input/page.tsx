@@ -3,7 +3,13 @@
 import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Occupation, Skill, ExperienceLevel } from "@/types";
-import { getOccupations, getSkills, getCountries, getSkillMap } from "@/lib/data";
+import {
+  getOccupations,
+  getSkills,
+  getCountries,
+  getSkillMap,
+  getOccupationIdsWithSalary,
+} from "@/lib/data";
 import { countryName } from "@/lib/countries";
 import SkillSelector from "@/components/SkillSelector";
 
@@ -13,6 +19,7 @@ export default function InputPage() {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [skillMap, setSkillMap] = useState<Map<string, Skill>>(new Map());
   const [countries, setCountries] = useState<string[]>([]);
+  const [salaryOccIds, setSalaryOccIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
 
   const [selectedOccupation, setSelectedOccupation] = useState("");
@@ -22,16 +29,21 @@ export default function InputPage() {
   const [occSearch, setOccSearch] = useState("");
 
   useEffect(() => {
-    Promise.all([getOccupations(), getSkills(), getCountries(), getSkillMap()]).then(
-      ([occs, sk, ctrs, sMap]) => {
-        occs.sort((a, b) => a.title.localeCompare(b.title));
-        setOccupations(occs);
-        setSkills(sk);
-        setCountries(ctrs);
-        setSkillMap(sMap);
-        setLoading(false);
-      }
-    );
+    Promise.all([
+      getOccupations(),
+      getSkills(),
+      getCountries(),
+      getSkillMap(),
+      getOccupationIdsWithSalary(),
+    ]).then(([occs, sk, ctrs, sMap, salIds]) => {
+      occs.sort((a, b) => a.title.localeCompare(b.title));
+      setOccupations(occs);
+      setSkills(sk);
+      setCountries(ctrs);
+      setSkillMap(sMap);
+      setSalaryOccIds(salIds);
+      setLoading(false);
+    });
   }, []);
 
   const filteredOccupations = occSearch.trim()
@@ -126,34 +138,74 @@ export default function InputPage() {
           />
           {filteredOccupations.length > 0 && !selectedOcc && (
             <ul className="absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-              {filteredOccupations.map((occ) => (
-                <li key={occ.id}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedOccupation(occ.id);
-                      setOccSearch("");
-                    }}
-                    className="w-full text-left px-3 py-2 text-sm hover:bg-sky-50"
-                  >
-                    <span className="font-medium">{occ.title}</span>
-                    {occ.description && (
-                      <span className="block text-xs text-slate-400 mt-0.5 line-clamp-1">
-                        {occ.description}
-                      </span>
-                    )}
-                  </button>
-                </li>
-              ))}
+              {filteredOccupations.map((occ) => {
+                const hasSalary = salaryOccIds.has(occ.id);
+                return (
+                  <li key={occ.id}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedOccupation(occ.id);
+                        setOccSearch("");
+                      }}
+                      className="w-full text-left px-3 py-2 text-sm hover:bg-sky-50"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-medium">{occ.title}</span>
+                        {hasSalary && (
+                          <span
+                            title="Salary data available for this role"
+                            className="shrink-0 inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200"
+                          >
+                            <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-2.21 0-4-1.79-4-4s1.79-4 4-4c1.43 0 2.681.75 3.394 1.879" />
+                            </svg>
+                            salary
+                          </span>
+                        )}
+                      </div>
+                      {occ.description && (
+                        <span className="block text-xs text-slate-400 mt-0.5 line-clamp-1">
+                          {occ.description}
+                        </span>
+                      )}
+                    </button>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>
         {selectedOcc && (
           <div className="text-sm text-slate-600 bg-sky-50 p-3 rounded-lg">
-            <span className="font-medium">{selectedOcc.title}</span>
-            <span className="text-slate-400 ml-2">
-              &middot; {selectedOcc.requiredSkills.length} required skills
-            </span>
+            <div className="flex items-center justify-between gap-2 flex-wrap">
+              <div>
+                <span className="font-medium">{selectedOcc.title}</span>
+                <span className="text-slate-400 ml-2">
+                  &middot; {selectedOcc.requiredSkills.length} required skills
+                </span>
+              </div>
+              {salaryOccIds.has(selectedOcc.id) ? (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-2.21 0-4-1.79-4-4s1.79-4 4-4c1.43 0 2.681.75 3.394 1.879" />
+                  </svg>
+                  Salary data available
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-amber-50 text-amber-700 border border-amber-200">
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                  </svg>
+                  No salary data for this role
+                </span>
+              )}
+            </div>
+            {!salaryOccIds.has(selectedOcc.id) && (
+              <p className="text-xs text-slate-500 mt-2">
+                The skill gap, learning path, and course recommendations will still work fully. Only the salary chart and ML prediction depend on the ai-jobs.net survey, which mainly covers AI, data, and software roles.
+              </p>
+            )}
           </div>
         )}
       </div>
