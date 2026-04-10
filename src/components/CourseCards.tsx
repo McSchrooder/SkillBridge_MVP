@@ -90,7 +90,6 @@ export default function CourseCards({ courses, pageSize = 9 }: CourseCardsProps)
         ))}
       </div>
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2 mt-6 pt-4 border-t border-slate-100">
           <button

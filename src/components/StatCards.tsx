@@ -9,12 +9,7 @@ interface StatCardsProps {
   stats: StatCard[];
 }
 
-/**
- * Row of summary stat cards at the top of the results page.
- * Matches the mockup: Jobs Available, Top Skill, Courses Recommended, Progress %, Avg. Salary.
- *
- * TODO: Wire up with real computed values from analysis results.
- */
+/** Row of summary stat cards at the top of the results page. */
 export default function StatCards({ stats }: StatCardsProps) {
   const colsClass =
     stats.length >= 4

@@ -65,7 +65,6 @@ function saveHistory(
       JSON.stringify(filtered.slice(0, 10))
     );
   } catch {
-    // ignore
   }
 }
 
@@ -188,7 +187,6 @@ function ResultsContent() {
     return allSalaryData.filter((s) => s.country === "ALL");
   }, [allSalaryData, selectedCountry]);
 
-  // Filter courses by a specific skill
   const displayedCourses = useMemo(() => {
     if (!selectedSkillFilter) return matchedCourses;
     return allCourses.filter((c) =>
@@ -263,7 +261,6 @@ function ResultsContent() {
           </p>
         </div>
 
-        {/* Country selector on results page */}
         <div className="shrink-0">
           <label className="block text-xs text-slate-500 mb-1">
             Salary &amp; data region
@@ -290,7 +287,6 @@ function ResultsContent() {
         <SalaryChart data={filteredSalary} />
       </div>
 
-      {/* ML Salary Prediction with SHAP explanations */}
       <SalaryPrediction
         prediction={prediction}
         shapData={shapData}
@@ -299,7 +295,6 @@ function ResultsContent() {
         country={selectedCountry === "ALL" ? "US (default)" : countryName(selectedCountry)}
       />
 
-      {/* Learning Path */}
       {gapResult && (
         <LearningPathComponent
           steps={learningSteps}
@@ -310,7 +305,6 @@ function ResultsContent() {
 
       <DemandTrendChart data={demandData} title={jobTitle} />
 
-      {/* Per-skill course browser */}
       <div id="courses" className="space-y-4 min-h-[400px]">
         {missingSkillDetails.length > 0 && (
           <div className="rounded-xl border border-slate-200 bg-white p-4">
@@ -369,7 +363,7 @@ function EmptyResultsState() {
   useEffect(() => {
     try {
       setHistory(JSON.parse(localStorage.getItem("skillbridge_history") || "[]"));
-    } catch { /* ignore */ }
+    } catch {}
   }, []);
 
   return (

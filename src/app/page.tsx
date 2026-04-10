@@ -40,9 +40,7 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Hero section with gradient */}
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-sky-900 text-white">
-        {/* Subtle grid pattern overlay */}
         <div
           className="absolute inset-0 opacity-[0.03]"
           style={{
@@ -51,13 +49,11 @@ export default function LandingPage() {
             backgroundSize: "40px 40px",
           }}
         />
-        {/* Glow effects */}
         <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-sky-500/20 rounded-full blur-[120px]" />
         <div className="absolute bottom-[-30%] right-[-10%] w-[400px] h-[400px] bg-violet-500/15 rounded-full blur-[100px]" />
 
         <div className="relative max-w-5xl mx-auto px-6 sm:px-8 py-20 sm:py-28">
           <div className="text-center space-y-6">
-            {/* Logo */}
             <div className="flex items-center justify-center gap-3 mb-2">
               <Image
                 src="/skillbridge_icon.png"
@@ -72,7 +68,6 @@ export default function LandingPage() {
               </h1>
             </div>
 
-            {/* SDG badges */}
             <div className="flex items-center justify-center gap-3 text-xs font-medium">
               <a
                 href="https://sdgs.un.org/goals/goal4"
@@ -92,7 +87,6 @@ export default function LandingPage() {
               </a>
             </div>
 
-            {/* Tagline */}
             <p className="text-lg sm:text-xl text-slate-300 leading-relaxed max-w-2xl mx-auto">
               Discover the skills you need, what they&apos;re worth, and where
               to learn them — powered by{" "}
@@ -102,7 +96,6 @@ export default function LandingPage() {
               .
             </p>
 
-            {/* CTA buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <Link
                 href="/input"
@@ -132,7 +125,6 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Data stats bar */}
           <div className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto">
             {[
               { value: "725", label: "Occupations", sub: "ESCO taxonomy" },
@@ -155,7 +147,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* How it works */}
       <section className="py-16 sm:py-20 px-6 sm:px-8 max-w-5xl mx-auto w-full">
         <h2 className="text-2xl font-bold text-slate-900 text-center mb-12">
           How it works
@@ -218,7 +209,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Feature cards */}
       <section className="py-16 px-6 sm:px-8 bg-slate-50/50">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-2xl font-bold text-slate-900 text-center mb-12">
@@ -284,10 +274,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Previous runs + data sources */}
       <section className="py-16 px-6 sm:px-8">
         <div className="max-w-5xl mx-auto space-y-12">
-          {/* Previous analysis runs */}
           {history.length > 0 && (
             <div>
               <h2 className="text-lg font-semibold text-slate-900 mb-4">
@@ -335,7 +323,6 @@ export default function LandingPage() {
             </div>
           )}
 
-          {/* Data sources */}
           <div className="rounded-xl border border-slate-200 bg-white p-6">
             <h2 className="text-lg font-semibold text-slate-900 mb-4">
               Built on open data
@@ -391,10 +378,26 @@ export default function LandingPage() {
               ))}
             </div>
           </div>
+
+          <div className="rounded-xl border border-amber-200 bg-amber-50/50 p-6">
+            <h3 className="text-sm font-semibold text-slate-700 mb-2">
+              Who this serves best
+            </h3>
+            <p className="text-sm text-slate-600 leading-relaxed">
+              SkillBridge is strongest for tech-adjacent roles such as data
+              scientists, ML engineers, and software developers. The salary
+              dataset comes from the ai-jobs.net community survey, which
+              concentrates on AI and tech, so non-tech occupations will not have
+              salary insights or ML predictions. The ESCO taxonomy reflects
+              European labor-market structure, and course recommendations are
+              English-only via Coursera. Skill-gap analysis, learning paths, and
+              course matching work for all 725 occupations regardless of salary
+              coverage.
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="border-t border-slate-200 py-8 px-6 sm:px-8 mt-auto">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-400">
           <p>SkillBridge MVP — Tomorrow University 2026</p>

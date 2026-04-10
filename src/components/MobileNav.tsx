@@ -11,7 +11,6 @@ export default function MobileNav() {
 
   return (
     <div className="md:hidden">
-      {/* Top bar */}
       <div className="flex items-center justify-between px-4 py-3 bg-slate-900 text-white">
         <Link href="/">
           <Logo size="sm" />
@@ -30,7 +29,6 @@ export default function MobileNav() {
         </button>
       </div>
 
-      {/* Dropdown menu */}
       {open && (
         <nav className="bg-slate-800 px-4 py-2 space-y-1">
           {[

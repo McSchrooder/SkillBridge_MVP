@@ -83,7 +83,6 @@ export default function SalaryPrediction({
         </p>
       </div>
 
-      {/* Predicted bracket */}
       {isClassifier && prediction.bracketLabel && (
         <div className="text-center py-5 rounded-xl bg-gradient-to-r from-violet-50 to-sky-50">
           <p className="text-sm text-slate-500">Predicted Salary Bracket</p>
@@ -96,7 +95,6 @@ export default function SalaryPrediction({
         </div>
       )}
 
-      {/* Bracket probabilities */}
       {isClassifier && probs.length > 0 && brackets.length > 0 && (
         <div>
           <h4 className="text-sm font-semibold text-slate-700 mb-3">
@@ -129,7 +127,6 @@ export default function SalaryPrediction({
         </div>
       )}
 
-      {/* Why this prediction? */}
       <div>
         <h4 className="text-sm font-semibold text-slate-700 mb-3">
           What drives this prediction?
@@ -161,7 +158,6 @@ export default function SalaryPrediction({
         </div>
       </div>
 
-      {/* Model performance + disclaimer */}
       <div className="border-t border-slate-100 pt-3 space-y-2">
         <div className="flex gap-4 text-xs">
           <span className="text-slate-500">
@@ -200,9 +196,7 @@ function WaterfallRow({
       <span className="w-40 sm:w-48 text-slate-600 truncate shrink-0 text-xs">
         {label}
       </span>
-      {/* Bar area: left half = negative, right half = positive */}
       <div className="flex-1 h-5 flex items-center">
-        {/* Negative side */}
         <div className="w-1/2 flex justify-end">
           {!isPositive && (
             <div
@@ -211,9 +205,7 @@ function WaterfallRow({
             />
           )}
         </div>
-        {/* Center line */}
         <div className="w-px h-4 bg-slate-300 shrink-0" />
-        {/* Positive side */}
         <div className="w-1/2">
           {isPositive && (
             <div

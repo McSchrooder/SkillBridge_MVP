@@ -63,7 +63,6 @@ export default function LearningPath({
         </p>
       </div>
 
-      {/* Progress bar */}
       <div>
         <div className="flex items-center justify-between text-sm mb-2">
           <span className="text-slate-600">
@@ -89,14 +88,12 @@ export default function LearningPath({
         </div>
       </div>
 
-      {/* Path timeline */}
       <div className="space-y-6">
         {grouped.map(
           ({ tier, label, color, lightColor, textColor, desc, steps: tierSteps }) => {
             if (tierSteps.length === 0) return null;
             return (
               <div key={tier}>
-                {/* Tier header */}
                 <div className="flex items-center gap-2 mb-3">
                   <div className={`w-3 h-3 rounded-full ${color}`} />
                   <h4 className="text-sm font-semibold text-slate-700">
@@ -107,13 +104,11 @@ export default function LearningPath({
                   </span>
                 </div>
 
-                {/* Steps */}
                 <div className="ml-1.5 border-l-2 border-slate-200 pl-5 space-y-3">
                   {tierSteps.map((step, idx) => {
                     const isExpanded = expandedStep === step.skillId;
                     return (
                       <div key={step.skillId} className="relative">
-                        {/* Dot on timeline */}
                         <div
                           className={`absolute -left-[25px] top-2.5 w-2.5 h-2.5 rounded-full border-2 border-white ${color}`}
                         />
@@ -164,7 +159,6 @@ export default function LearningPath({
                           </p>
                         </button>
 
-                        {/* Expanded: show detail */}
                         {isExpanded && (
                           <div className="mt-2 ml-7 text-xs text-slate-500">
                             {step.courses.length > 0 ? (

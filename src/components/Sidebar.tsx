@@ -57,14 +57,12 @@ export default function Sidebar() {
 
   return (
     <aside className="hidden md:flex w-64 min-h-screen bg-slate-900 text-white flex-col shrink-0">
-      {/* Logo */}
       <div className="px-6 py-5 border-b border-slate-700">
         <Link href="/">
           <Logo size="md" />
         </Link>
       </div>
 
-      {/* Navigation */}
       <nav className="flex-1 px-3 py-4 space-y-1">
         {navItems.map((item) => {
           // Only exact match for active state (no multi-highlight)
@@ -86,7 +84,6 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* Footer */}
       <div className="px-6 py-4 border-t border-slate-700 text-xs text-slate-500">
         SkillBridge MVP &middot; SDG 4 &amp; 8
       </div>

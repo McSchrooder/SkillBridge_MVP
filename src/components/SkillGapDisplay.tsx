@@ -51,7 +51,6 @@ export default function SkillGapDisplay({
         </span>
       </div>
 
-      {/* Progress bar */}
       <div className="w-full bg-slate-100 rounded-full h-2.5 mb-4">
         <div
           className="bg-emerald-500 h-2.5 rounded-full transition-all"
@@ -65,7 +64,6 @@ export default function SkillGapDisplay({
         </p>
       )}
 
-      {/* Skills table */}
       <div className="max-h-80 overflow-y-auto">
         <table className="w-full text-sm">
           <thead className="sticky top-0 bg-white">

@@ -44,29 +44,26 @@ export interface SalaryStats {
   p75: number;
   currency: string;
   sampleSize: number;
-  occupationId: string; // mapped ESCO occupation ID (may be empty)
+  occupationId: string;
 }
 
 export type ExperienceLevel = "entry" | "mid" | "senior" | "executive";
 
-// Demand trend (proxy from ai-jobs.net posting counts)
 export interface DemandTrend {
   jobTitle: string;
   year: number;
   postings: number;
 }
 
-// User input for the analysis
 export interface UserProfile {
-  currentSkills: string[]; // skill IDs
-  targetOccupation: string; // occupation ID
+  currentSkills: string[];
+  targetOccupation: string;
   experienceLevel: ExperienceLevel;
-  country: string; // ISO 2-letter code
+  country: string;
 }
 
-// Result of gap analysis
 export interface GapAnalysisResult {
-  matched: string[]; // skill IDs the user has
-  missing: string[]; // skill IDs the user needs
+  matched: string[];
+  missing: string[];
   matchPercentage: number;
 }

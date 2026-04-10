@@ -120,7 +120,6 @@ export default function InputPage() {
         </p>
       </div>
 
-      {/* Target occupation */}
       <div className="rounded-xl border border-slate-200 bg-white p-6 space-y-4">
         <h3 className="text-lg font-semibold text-slate-900">
           Target Occupation
@@ -210,7 +209,6 @@ export default function InputPage() {
         )}
       </div>
 
-      {/* Required skills for this occupation — quick select */}
       {selectedOcc && requiredSkillDetails.length > 0 && (
         <div className="rounded-xl border border-sky-200 bg-sky-50/50 p-6 space-y-3">
           <div className="flex items-center justify-between">
@@ -256,14 +254,12 @@ export default function InputPage() {
         </div>
       )}
 
-      {/* Skill selector (search all skills) */}
       <SkillSelector
         availableSkills={skills}
         selectedSkillIds={selectedSkillIds}
         onSelectionChange={setSelectedSkillIds}
       />
 
-      {/* Country & experience */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div className="rounded-xl border border-slate-200 bg-white p-6 space-y-4">
           <h3 className="text-lg font-semibold text-slate-900">Country</h3>
@@ -311,7 +307,6 @@ export default function InputPage() {
         </div>
       </div>
 
-      {/* Submit */}
       <button
         onClick={handleAnalyze}
         disabled={!selectedOccupation}

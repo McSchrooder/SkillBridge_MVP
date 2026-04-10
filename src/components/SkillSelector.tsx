@@ -53,7 +53,6 @@ export default function SkillSelector({
         Search the ESCO taxonomy and pick skills you already have.
       </p>
 
-      {/* Search input */}
       <div className="relative">
         <input
           type="text"
@@ -82,7 +81,6 @@ export default function SkillSelector({
         )}
       </div>
 
-      {/* Selected skills tags */}
       {selectedSkills.length > 0 && (
         <div className="flex flex-wrap gap-2 mt-4">
           {selectedSkills.map((skill) => (

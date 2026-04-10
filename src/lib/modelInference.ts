@@ -1,14 +1,9 @@
 /**
- * Browser-side XGBoost inference.
+ * Browser-side XGBoost inference (unused).
  *
- * When the model JSON is available at /public/data/model.json,
- * this module will:
- * 1. Load the model tree structure
- * 2. Walk the trees with user features (skills + experience + country)
- * 3. Return a predicted salary
- *
- * For now this is a placeholder. The model JSON will be added after
- * training in Python and exporting via xgboost's dump_model or save_model.
+ * Predictions are now pre-computed in Python and served as static JSON
+ * via getPredictions() in lib/data.ts. This module is kept for reference
+ * in case live inference is needed in a future iteration.
  */
 
 export interface PredictionInput {
@@ -25,6 +20,5 @@ export interface PredictionResult {
 export async function predict(
   _input: PredictionInput
 ): Promise<PredictionResult | null> {
-  // Placeholder — will implement tree walker when model JSON is available
   return null;
 }
